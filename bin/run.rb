@@ -1,4 +1,4 @@
 require_relative '../config/environment'
 
-cli = CommandLineInterface.new
+cli = RobAThon.new
 cli.greeting

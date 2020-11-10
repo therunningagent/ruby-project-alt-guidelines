@@ -1,6 +1,6 @@
 require_relative '../config/environment'
 
-class CommandLineInterface
+class RobAThon
 
     def greeting
         puts "Welcome to Rob-a-thon!"
@@ -24,7 +24,14 @@ class CommandLineInterface
     def sign_in
         puts "Welcome back. Please enter in your username."
         sign_in_response = gets.chomp
-        puts "Hello #{sign_in_response}."
+        if User.find_by(username: sign_in_response)
+            puts "Hello #{sign_in_response}."
+        else
+            puts "Sorry we could not find your account. Please try again."
+            sleep(5)
+            system("clear")
+            sign_in 
+        end 
     end 
 
 end 
