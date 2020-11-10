@@ -33,5 +33,5 @@ class RobAThon
             sign_in 
         end 
     end 
-
+    puts "Test"
 end 
