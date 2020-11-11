@@ -34,7 +34,7 @@ class RobAThon
             main_menu
         else
             puts "Sorry we could not find your account. Please try again."
-            sleep(5)
+            sleep(1)
             system("clear")
             sign_in 
         end 
@@ -51,6 +51,7 @@ class RobAThon
         user_input = gets.chomp.to_i
         if user_input == 1
             system("clear")
+            puts "Looks like you're ready to get down to business."
             select_character
         elsif user_input == 2
             system("clear")
@@ -64,31 +65,62 @@ class RobAThon
     ## select_character
 
     def characters
-        Character.all.each { |character| character.name}
-            puts character.name 
+        Character.all.map { |character| character.name }
     end 
 
-    def find_character
-        Character.all.find { |character| character.name}
+    def find_character(current_character)
+        Character.all.find { |character| character.name == current_character}
     end 
 
     def select_character
-
-        p "Looks like you're ready to get down to business."
-        p "Select your character"
-        characters
+        
+        puts "Select your character"
+        puts characters
         current_character = gets.chomp.to_s
-        if Character.all.find { |character| character.name == current_character}
+        if find_character(current_character)
+        puts "Thank you #{current_character}. GO GET THEM!"
+        sleep(1)
+        system("clear")
         start_game
         else 
-            p "Nice try. Try again."
+            puts "Nice try. Try again."
+            sleep(3)
+            system("clear")
+            select_character
         end 
+    end 
+
+    # scenarios 
+
+    def scenario
+        location = ["Louis Vuitton", "Walmart", "Disney World", "Bank of America", "your friend's house", "Cartier"]
+        location.sample
+    end 
+
+    def user_options
+        puts "How would you like to proceed... It's your choice and yours alone."
+        puts "1. Run"
+        puts "2. FIGHT"
+        puts "3. Surrender"
+        puts "4. Walkaway" 
     end 
 
     ## start_game
 
     def start_game
-        p "start game"
+        puts "I'll take you to #{scenario}"
+        sleep(1)
+        user_options
+        user_input = gets.chomp.to_i
+        if user_input == 1 
+            p "Run"
+        elsif user_input == 2
+            p "FIGHT"
+        elsif user_input == 3
+            p "Surrender"
+        elsif user_input == 4
+            p "Walkaway"
+        end 
 
     end 
 
