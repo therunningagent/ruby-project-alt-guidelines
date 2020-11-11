@@ -23,6 +23,7 @@ class RobAThon
         sleep(0.75)
         system("clear")
         puts "Thank you #{new_user.username}. It's time to make some $$$!"
+        main_menu
     end 
 
     def sign_in
@@ -30,6 +31,7 @@ class RobAThon
         sign_in_response = gets.chomp
         if User.find_by(username: sign_in_response)
             puts "Hello #{sign_in_response}."
+            main_menu
         else
             puts "Sorry we could not find your account. Please try again."
             sleep(5)
@@ -48,23 +50,46 @@ class RobAThon
 
         user_input = gets.chomp.to_i
         if user_input == 1
-            p "start_game"
+            system("clear")
+            select_character
         elsif user_input == 2
-            p "game_history"
+            system("clear")
+            game_history
         elsif user_input == 3
-            p "high_score"
+            system("clear")
+            history_score
         end 
     end
+
+    ## select_character
+
+    def characters
+        Character.all.each { |character| character.name}
+            puts character.name 
+    end 
+
+    def find_character
+        Character.all.find { |character| character.name}
+    end 
+
+    def select_character
+
+        p "Looks like you're ready to get down to business."
+        p "Select your character"
+        characters
+        current_character = gets.chomp.to_s
+        if Character.all.find { |character| character.name == current_character}
+        start_game
+        else 
+            p "Nice try. Try again."
+        end 
+    end 
 
     ## start_game
 
     def start_game
+        p "start game"
 
-        p "Looks like you're ready to get down to business."
-        p "Select your character"
-        p Character.all.map { |character| character.name}
-        current_character = gets.chomp.to_s
-        
     end 
 
     ## game_history
