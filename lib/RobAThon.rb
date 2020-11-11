@@ -18,7 +18,11 @@ class RobAThon
         sleep(0.75)
         system("clear")
         puts "Please enter a username."
-        new_user_response = gets.chomp
+        new_user_response = gets.chomp.to_s
+        new_user = User.new(username: new_user_response)
+        sleep(0.75)
+        system("clear")
+        puts "Thank you #{new_user.username}. It's time to make some $$$!"
     end 
 
     def sign_in
@@ -33,4 +37,39 @@ class RobAThon
             sign_in 
         end 
     end 
+
+    ## main menu 
+
+    def main_menu 
+        puts "Main Menu"
+        puts "1 - Make some $$$"
+        puts "2 - Game History"
+        puts "3 - High Score"
+
+        user_input = gets.chomp.to_i
+        if user_input == 1
+            p "start_game"
+        elsif user_input == 2
+            p "game_history"
+        elsif user_input == 3
+            p "high_score"
+        end 
+    end
+
+    ## start_game
+
+    def start_game
+
+        p "Looks like you're ready to get down to business."
+        p "Select your character"
+        p Character.all.map { |character| character.name}
+        current_character = gets.chomp.to_s
+        
+    end 
+
+    ## game_history
+
+    ## high_score
+
+
 end 
