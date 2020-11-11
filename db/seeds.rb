@@ -4,11 +4,11 @@ User.destroy_all
 
 
 Character.create([
-    {name: "Luis Torres", health_count: 5, total_money: 1000, speed: 1},
-    {name: "Thomas Garayua", health_count: 5, total_money: 1000, speed: 3},
-    {name: "Chelsey", health_count: 10, total_money: 300, speed: 2},
-    {name: "Zohren", health_count: 8 , total_money: 200, speed: 3},
-    {name: "Charlie", health_count: 1, total_money: 100, speed: 3}
+    {name: "Speedy Gonzalez", health_count: 5, total_money: 500, speed: 3},
+    {name: "James Bond", health_count: 5, total_money: 2500, speed: 2},
+    {name: "Cat Woman", health_count: 3, total_money: 5000, speed: 1},
+    {name: "Super Woman", health_count: 10, total_money: 1000, speed: 3},
+    {name: "Spongebob Squarepants", health_count: 2, total_money: 100, speed: 1}
 ])
 
 c1 = Character.first
