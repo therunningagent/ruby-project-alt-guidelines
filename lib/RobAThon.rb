@@ -47,11 +47,13 @@ class RobAThon
         puts "1 - Make some $$$"
         puts "2 - Game History"
         puts "3 - High Score"
+        puts "4 - Delete Account"
 
         user_input = gets.chomp.to_i
         if user_input == 1
             system("clear")
             puts "Looks like you're ready to get down to business."
+            puts
             select_character
         elsif user_input == 2
             system("clear")
@@ -59,6 +61,9 @@ class RobAThon
         elsif user_input == 3
             system("clear")
             history_score
+        elsif user_input == 4
+            system("clear")
+            delete_user
         end 
     end
 
@@ -74,7 +79,8 @@ class RobAThon
 
     def select_character
         
-        puts "Select your character"
+        puts "Choose your character"
+        puts 
         puts characters
         current_character = gets.chomp.to_s
         if find_character(current_character)
@@ -108,7 +114,7 @@ class RobAThon
     ## start_game
 
     def start_game
-        puts "I'll take you to #{scenario}"
+        puts "I'll take you to #{scenario}.."
         sleep(1)
         user_options
         user_input = gets.chomp.to_i
@@ -124,6 +130,26 @@ class RobAThon
 
     end 
 
+    ## robber methods
+
+    def run 
+    end 
+
+    def fight 
+    end 
+
+    def surrender 
+    end 
+
+    def walkaway 
+    end 
+
+    ## different rounds 
+
+    def round
+
+    end 
+
     ## game_history
 
     def game_history
@@ -133,6 +159,5 @@ class RobAThon
 
     def high_score
     end
-
 
 end 
