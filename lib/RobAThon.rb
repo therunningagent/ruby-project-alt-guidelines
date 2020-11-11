@@ -45,49 +45,4 @@ class RobAThon
             sign_in 
         end 
     end 
-
-    ## main menu 
-
-    def main_menu 
-        puts "Main Menu"
-        puts "1 - Make some $$$"
-        puts "2 - Game History"
-        puts "3 - High Score"
-
-        user_input = gets.chomp.to_i
-        if user_input == 1
-            start_game 
-        elsif user_input == 2
-            p "game_history"
-        elsif user_input == 3
-            p "high_score"
-        end 
-    end
-
-    ## start_game
-
-    def start_game
-
-        p "Looks like you're ready to get down to business."
-        p "Select your character"
-        p Character.all.map { |character| character.name}
-        current_character = gets.chomp.to_s
-        check_character_input(current_character)
-    end 
-
-    def check_character_input(current_character)
-        if Character.all.select { |character| character.name == current_character}
-        p "You got it."
-    else 
-        p "Please try again"
-        start_game
-    end 
-
-    end 
-
-    ## game_history
-
-    ## high_score
-
-
 end 
