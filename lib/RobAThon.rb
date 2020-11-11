@@ -2,8 +2,6 @@ require_relative '../config/environment'
 
 class RobAThon
 
-    ## greeting + user prompt
-
     def greeting
         puts "Welcome to Rob-a-thon!"
         sleep (0.75)
@@ -29,14 +27,9 @@ class RobAThon
 
     def sign_in
         puts "Welcome back. Please enter in your username."
-        sign_in_response = gets.chomp.to_s
+        sign_in_response = gets.chomp
         if User.find_by(username: sign_in_response)
-            sleep(1.5)
-            system("clear")
-            puts "OH HELLO #{sign_in_response}. Let's go make some $$$!"
-            sleep(1.5)
-            system("clear")
-            main_menu
+            puts "Hello #{sign_in_response}."
         else
             puts "Sorry we could not find your account. Please try again."
             sleep(5)
@@ -76,7 +69,13 @@ class RobAThon
 
     ## game_history
 
+    def game_history
+    end 
+
     ## high_score
+
+    def high_score
+    end
 
 
 end 
