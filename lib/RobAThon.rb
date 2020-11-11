@@ -69,7 +69,13 @@ class RobAThon
 
     ## game_history
 
+    def game_history
+    end 
+
     ## high_score
+
+    def high_score
+    end
 
 
 end 
