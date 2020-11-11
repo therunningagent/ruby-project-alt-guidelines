@@ -25,6 +25,7 @@ class RobAThon
         sleep(0.75)
         system("clear")
         puts "Thank you #{new_user.username}. It's time to make some $$$!"
+        main_menu
     end 
 
     def sign_in
@@ -39,7 +40,7 @@ class RobAThon
             main_menu
         else
             puts "Sorry we could not find your account. Please try again."
-            sleep(5)
+            sleep(3)
             system("clear")
             sign_in 
         end 
@@ -55,7 +56,7 @@ class RobAThon
 
         user_input = gets.chomp.to_i
         if user_input == 1
-            p "start_game"
+            start_game 
         elsif user_input == 2
             p "game_history"
         elsif user_input == 3
@@ -71,7 +72,17 @@ class RobAThon
         p "Select your character"
         p Character.all.map { |character| character.name}
         current_character = gets.chomp.to_s
-        
+        check_character_input(current_character)
+    end 
+
+    def check_character_input(current_character)
+        if Character.all.select { |character| character.name == current_character}
+        p "You got it."
+    else 
+        p "Please try again"
+        start_game
+    end 
+
     end 
 
     ## game_history
