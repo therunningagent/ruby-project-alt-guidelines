@@ -7,15 +7,21 @@ class RobAThon
     def greeting
         puts "Welcome to Rob-a-thon!"
         sleep (0.75)
-        puts "Are you a new robber? (Y or N)"
-        user_response = gets.chomp
-        if user_response == "Y"
+
+        choices = ["Yes", "No"]
+
+        selection = @@prompt.select("Are you a new robber?", choices)
+
+        case selection
+        when "Yes"
+            system("clear")
             create_new_user
-        else 
+        when "No"
+            system("clear")
             sign_in
         end 
     end 
-    
+
     def create_new_user
         sleep(0.75)
         system("clear")
@@ -42,10 +48,6 @@ class RobAThon
         end 
     end 
 
-    def characters
-        Character.all.map { |character| character.name }
-    end 
-
     ## main menu 
 
     def main_menu 
@@ -55,93 +57,118 @@ class RobAThon
 
         case selection
         when "Make some $$$"
+            system("clear")
             select_character
         when "Game History"
+            system("clear")
             game_history
         when "High Score"
+            system("clear")
             history_score
         when "Delete Account"
+            system("clear")
             delete_user
         end 
     end 
 
     ## select_character
 
+    ## how do I shorten this code
+    ## how do I let the app know which character I am?
+
     def select_character
         character_choices = ["Speedy Gonzalez", "James Bond", "Cat Woman", "Super Woman", "Spongebob Squarepants"]
 
-        selection = @@prompt.select("Choose your character", character_choices)
+        selection = @@prompt.select("Character selection:", character_choices)
 
         case selection
         when "Speedy Gonzalez"
             sg = Character.all.select{ |character| character.name == "Speedy Gonzalez"}
-            puts "You choose #{sg[0].name}, your health count is #{sg[0].health_count} and you have $#{sg[0].total_money} in the bank."
+            puts "Your health count is #{sg[0].health_count} and you have $#{sg[0].total_money} in the bank."
+            sleep(1)
         when "James Bond"
             jb = Character.all.select{ |character| character.name == "James Bond"}
-            puts "You choose #{jb[0].name}, your health count is #{jb[0].health_count} and you have $#{jb[0].total_money} in the bank."
+            puts "Your health count is #{jb[0].health_count} and you have $#{jb[0].total_money} in the bank."
+            sleep(1)
         when "Cat Woman"
             cw = Character.all.select{ |character| character.name == "Cat Woman"}
-            puts "You choose #{cw[0].name}, your health count is #{cw[0].health_count} and you have $#{cw[0].total_money} in the bank."
+            puts "Your health count is #{cw[0].health_count} and you have $#{cw[0].total_money} in the bank."
+            sleep(1)
         when "Super Woman"
             sw = Character.all.select{ |character| character.name == "Super Woman"}
-            puts "You choose #{sw[0].name}, your health count is #{sw[0].health_count} and you have $#{sw[0].total_money} in the bank."
+            puts "Your health count is #{sw[0].health_count} and you have $#{sw[0].total_money} in the bank."
+            sleep(1)
         when "Spongebob Squarepants"
             ss = Character.all.select{ |character| character.name == "Spongebob Squarepants"}
-            puts "You choose #{ss[0].name}, your health count is #{ss[0].health_count} and you have $#{ss[0].total_money} in the bank."
+            puts "Your health count is #{ss[0].health_count} and you have $#{ss[0].total_money} in the bank."
+            sleep(1)
         end 
+        scenario
+    end 
 
-    # scenarios 
+     # scenarios
 
     def scenario
-        location = ["Louis Vuitton", "Walmart", "Disney World", "Bank of America", "your friend's house", "Cartier"]
-        location.sample
+        puts 
+        random_location = ["Louis Vuitton", "Walmart", "Disney World", "Bank of America", "your friend's house", "Cartier"].sample
+        puts "I'll take you to #{random_location}.."
+        sleep(1)
+        puts 
+        start_game
     end 
-
-    def user_options
-        puts "How would you like to proceed... It's your choice and yours alone."
-        puts "1. Run"
-        puts "2. FIGHT"
-        puts "3. Surrender"
-        puts "4. Walkaway" 
-    end 
-
+    
     ## start_game
 
     def start_game
-        puts "I'll take you to #{scenario}.."
-        sleep(1)
-        user_options
-        user_input = gets.chomp.to_i
-        if user_input == 1 
-            run
-        elsif user_input == 2
-            fight
-        elsif user_input == 3
-            surrender
-        elsif user_input == 4
-            walk_away
-        end 
 
+        move_choices = ["Run", "FIGHT", "Surrender", "Walk-away"]
+
+        selection = @@prompt.select("How would you like to proceed... It's your choice and yours alone.", move_choices)
+
+        case selection
+            when "Run"
+                run
+            when "FIGHT"
+                fight
+            when "Surrender"
+                surrender
+            when "Walk-away"
+                walk_away
+            end 
     end 
 
     ## robber methods
 
+    def random_num_generator
+        num = rand(1..10)
+        num
+    end 
+
     def run 
+        if random_num_generator > 5 
+            self.total_money += 500
+        else 
+            self.total_money -= 500
+        end
     end 
 
     def fight 
+        if random_num_generator > 5 
+            self.health_count += 1
+        else 
+            self.health_count -= 1
+        end
     end 
 
     def surrender 
+        if random_num_generator > 5 
+            self.health_count += 2
+        else 
+            self.total_money -= rand(1..500)
+        end
     end 
 
-    def walk_away 
-    end 
-
-    ## different rounds 
-
-    def round
-
+    def walk_away
     end 
 
     ## game_history
