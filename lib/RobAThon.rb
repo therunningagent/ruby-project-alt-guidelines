@@ -56,7 +56,7 @@ class RobAThon
     ## main menu 
 
     def main_menu 
-        choices = ["Make some $$$", "Game History", "High Score", "Delete Account"]
+        choices = ["Make some $$$", "Game History", "High Score", "Delete User"]
 
         selection = @@prompt.select("Main Menu", choices)
 
@@ -70,7 +70,7 @@ class RobAThon
         when "High Score"
             system("clear")
             history_score
-        when "Delete Account"
+        when "Delete User"
             system("clear")
             delete_user
         end 
@@ -136,7 +136,17 @@ class RobAThon
         puts
         system("clear")
         puts "You currently have #{current_game.total_money} and your health count is #{current_game.health_count}."
-        start_game(current_game)
+    end
+
+    def check_alive(current_game)
+
+        if current_game.health_count <= 0 
+            puts "Tough luck trooper."
+            sleep(5)
+            main_menu
+        else current_game.health_count > 0 
+            start_game(current_game)
+        end 
     end
 
     def run(current_game)
@@ -144,8 +154,10 @@ class RobAThon
             current_game.total_money += 500
         else 
             current_game.total_money -= 500
+            current_game.health_count -= 1
         end
         game_stats(current_game)
+        check_alive(current_game)
     end 
 
     def fight(current_game)
@@ -155,15 +167,17 @@ class RobAThon
             current_game.health_count -= 1
         end
         game_stats(current_game)
+        check_alive(current_game)
     end 
 
     def surrender(current_game)
         if random_num_generator > 5 
             current_game.health_count += 2
         else 
-            current_game.health_count -= rand(1..500)
+            current_game.health_count -= rand(1..5)
         end
         game_stats(current_game)
+        check_alive(current_game)
     end 
 
     def walk_away(current_game)
@@ -175,23 +189,39 @@ class RobAThon
         when "Yes"
             system("clear")
             game_stats(current_game)
+            main_menu
         when "No"
             puts
             puts "Phew. Let's keep playing."
             sleep(2)
             system("clear")
-            scenario
+            scenario(current_game)
         end 
     end 
 
     ## game_history
 
     def game_history
+        Game.all.select { |game| game.user_id == $user_search}
     end 
 
     ## high_score
 
     def high_score
     end
+
+    ## delete_user
+    def delete_user
+        sleep(0.75)
+        system("clear")
+        puts "Please type in '#{$user_search.username}' to confirm."
+        delete_user_response = gets.chomp.to_s
+        User.where(username: delete_user_response).destroy_all
+        puts "Your user name has been deleted!"
+        sleep(3)
+        system("clear")
+        greeting
+    end 
+
 
 end 
