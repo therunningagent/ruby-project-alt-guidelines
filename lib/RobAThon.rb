@@ -1,8 +1,10 @@
 require_relative '../config/environment'
 
-@@prompt = TTY::Prompt.new
+
 
 class RobAThon
+
+    @@prompt = TTY::Prompt.new
 
     def greeting
         puts "Welcome to Rob-a-thon!"
@@ -22,22 +24,25 @@ class RobAThon
         end 
     end 
 
+    $user_search = nil
+
     def create_new_user
         sleep(0.75)
         system("clear")
         puts "Please enter a username."
         new_user_response = gets.chomp.to_s
-        new_user = User.new(username: new_user_response)
+        $user_search = User.create(username: new_user_response)
         sleep(0.75)
         system("clear")
-        puts "Thank you #{new_user.username}. It's time to make some $$$!"
+        puts "Thank you #{$user_search.username}. It's time to make some $$$!"
         main_menu
     end 
 
     def sign_in
         puts "Welcome back. Please enter in your username."
         sign_in_response = gets.chomp
-        if User.find_by(username: sign_in_response)
+        $user_search = User.find_by(username: sign_in_response)
+        if $user_search
             puts "Hello #{sign_in_response}."
             main_menu
         else
@@ -81,45 +86,27 @@ class RobAThon
 
         selection = @@prompt.select("Character selection:", character_choices)
 
-        case selection
-        when "Speedy Gonzalez"
-            sg = Character.all.select{ |character| character.name == "Speedy Gonzalez"}
-            puts "Your health count is #{sg[0].health_count} and you have $#{sg[0].total_money} in the bank."
-            sleep(1)
-        when "James Bond"
-            jb = Character.all.select{ |character| character.name == "James Bond"}
-            puts "Your health count is #{jb[0].health_count} and you have $#{jb[0].total_money} in the bank."
-            sleep(1)
-        when "Cat Woman"
-            cw = Character.all.select{ |character| character.name == "Cat Woman"}
-            puts "Your health count is #{cw[0].health_count} and you have $#{cw[0].total_money} in the bank."
-            sleep(1)
-        when "Super Woman"
-            sw = Character.all.select{ |character| character.name == "Super Woman"}
-            puts "Your health count is #{sw[0].health_count} and you have $#{sw[0].total_money} in the bank."
-            sleep(1)
-        when "Spongebob Squarepants"
-            ss = Character.all.select{ |character| character.name == "Spongebob Squarepants"}
-            puts "Your health count is #{ss[0].health_count} and you have $#{ss[0].total_money} in the bank."
-            sleep(1)
-        end 
-        scenario
+        sg = Character.all.find { |character| character.name == selection}
+        puts "Your health count is #{sg.health_count} and you have $#{sg.total_money} in the bank."
+        sleep(1)
+        current_game = Game.create(user_id: $user_search.id, character_id: sg.id, health_count: sg.health_count, total_money: sg.total_money)
+        scenario(current_game)
     end 
 
      # scenarios
 
-    def scenario
+    def scenario(current_game)
         puts 
         random_location = ["Louis Vuitton", "Walmart", "Disney World", "Bank of America", "your friend's house", "Cartier"].sample
         puts "I'll take you to #{random_location}.."
         sleep(1)
         puts 
-        start_game
+        start_game(current_game)
     end 
     
     ## start_game
 
-    def start_game
+    def start_game(current_game)
 
         move_choices = ["Run", "FIGHT", "Surrender", "Walk-away"]
 
@@ -127,13 +114,14 @@ class RobAThon
 
         case selection
             when "Run"
-                run
+                run(current_game)
             when "FIGHT"
-                fight
+                fight(current_game)
             when "Surrender"
-                surrender
+                surrender(current_game)
             when "Walk-away"
-                walk_away
+                puts 
+                walk_away(current_game)
             end 
     end 
 
@@ -144,31 +132,56 @@ class RobAThon
         num
     end 
 
-    def run 
+    def game_stats(current_game)
+        puts
+        system("clear")
+        puts "You currently have #{current_game.total_money} and your health count is #{current_game.health_count}."
+        start_game(current_game)
+    end
+
+    def run(current_game)
         if random_num_generator > 5 
-            self.total_money += 500
+            current_game.total_money += 500
         else 
-            self.total_money -= 500
+            current_game.total_money -= 500
         end
+        game_stats(current_game)
     end 
 
-    def fight 
+    def fight(current_game)
         if random_num_generator > 5 
-            self.health_count += 1
+            current_game.health_count += 1
         else 
-            self.health_count -= 1
+            current_game.health_count -= 1
         end
+        game_stats(current_game)
     end 
 
-    def surrender 
+    def surrender(current_game)
         if random_num_generator > 5 
-            self.health_count += 2
+            current_game.health_count += 2
         else 
-            self.total_money -= rand(1..500)
+            current_game.health_count -= rand(1..500)
         end
+        game_stats(current_game)
     end 
 
-    def walk_away
+    def walk_away(current_game)
+        choices = ["Yes", "No"]
+
+        selection = @@prompt.select("You're done already? We just started to have some fun.", choices)
+
+        case selection
+        when "Yes"
+            system("clear")
+            game_stats(current_game)
+        when "No"
+            puts
+            puts "Phew. Let's keep playing."
+            sleep(2)
+            system("clear")
+            scenario
+        end 
     end 
 
     ## game_history

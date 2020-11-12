@@ -35,11 +35,11 @@ u5 = User.last
 
 
 Game.create([
-    {user_id: u1.id, character_id: c1.id, health_count: 5, total_money: 1000},
-    {user_id: u2.id, character_id: c2.id, health_count: 5, total_money: 1000},
-    {user_id: u3.id, character_id: c3.id, health_count: 5, total_money: 1000},
-    {user_id: u4.id, character_id: c4.id, health_count: 5, total_money: 1000},
-    {user_id: u5.id, character_id: c5.id, health_count: 5, total_money: 1000}
+    {user_id: u1.id, character_id: c1.id, health_count: 0, total_money: 0},
+    {user_id: u2.id, character_id: c2.id, health_count: 0, total_money: 0},
+    {user_id: u3.id, character_id: c3.id, health_count: 0, total_money: 0},
+    {user_id: u4.id, character_id: c4.id, health_count: 0, total_money: 0},
+    {user_id: u5.id, character_id: c5.id, health_count: 0, total_money: 0}
 ])
 
 
