@@ -1,5 +1,7 @@
 require_relative '../config/environment'
 
+@@prompt = TTY::Prompt.new
+
 class RobAThon
 
     def greeting
@@ -40,61 +42,53 @@ class RobAThon
         end 
     end 
 
-    ## main menu 
-
-    def main_menu 
-        puts "Main Menu"
-        puts "1 - Make some $$$"
-        puts "2 - Game History"
-        puts "3 - High Score"
-        puts "4 - Delete Account"
-
-        user_input = gets.chomp.to_i
-        if user_input == 1
-            system("clear")
-            puts "Looks like you're ready to get down to business."
-            puts
-            select_character
-        elsif user_input == 2
-            system("clear")
-            game_history
-        elsif user_input == 3
-            system("clear")
-            history_score
-        elsif user_input == 4
-            system("clear")
-            delete_user
-        end 
-    end
-
-    ## select_character
-
     def characters
         Character.all.map { |character| character.name }
     end 
 
-    def find_character(current_character)
-        Character.all.find { |character| character.name == current_character}
-    end 
+    ## main menu 
 
-    def select_character
-        
-        puts "Choose your character"
-        puts 
-        puts characters
-        current_character = gets.chomp.to_s
-        if find_character(current_character)
-        puts "Thank you #{current_character}. GO GET THEM!"
-        sleep(1)
-        system("clear")
-        start_game
-        else 
-            puts "Nice try. Try again."
-            sleep(3)
-            system("clear")
+    def main_menu 
+        choices = ["Make some $$$", "Game History", "High Score", "Delete Account"]
+
+        selection = @@prompt.select("Main Menu", choices)
+
+        case selection
+        when "Make some $$$"
             select_character
+        when "Game History"
+            game_history
+        when "High Score"
+            history_score
+        when "Delete Account"
+            delete_user
         end 
     end 
+
+    ## select_character
+
+    def select_character
+        character_choices = ["Speedy Gonzalez", "James Bond", "Cat Woman", "Super Woman", "Spongebob Squarepants"]
+
+        selection = @@prompt.select("Choose your character", character_choices)
+
+        case selection
+        when "Speedy Gonzalez"
+            sg = Character.all.select{ |character| character.name == "Speedy Gonzalez"}
+            puts "You choose #{sg[0].name}, your health count is #{sg[0].health_count} and you have $#{sg[0].total_money} in the bank."
+        when "James Bond"
+            jb = Character.all.select{ |character| character.name == "James Bond"}
+            puts "You choose #{jb[0].name}, your health count is #{jb[0].health_count} and you have $#{jb[0].total_money} in the bank."
+        when "Cat Woman"
+            cw = Character.all.select{ |character| character.name == "Cat Woman"}
+            puts "You choose #{cw[0].name}, your health count is #{cw[0].health_count} and you have $#{cw[0].total_money} in the bank."
+        when "Super Woman"
+            sw = Character.all.select{ |character| character.name == "Super Woman"}
+            puts "You choose #{sw[0].name}, your health count is #{sw[0].health_count} and you have $#{sw[0].total_money} in the bank."
+        when "Spongebob Squarepants"
+            ss = Character.all.select{ |character| character.name == "Spongebob Squarepants"}
+            puts "You choose #{ss[0].name}, your health count is #{ss[0].health_count} and you have $#{ss[0].total_money} in the bank."
+        end 
 
     # scenarios 
 
@@ -119,13 +113,13 @@ class RobAThon
         user_options
         user_input = gets.chomp.to_i
         if user_input == 1 
-            p "Run"
+            run
         elsif user_input == 2
-            p "FIGHT"
+            fight
         elsif user_input == 3
-            p "Surrender"
+            surrender
         elsif user_input == 4
-            p "Walkaway"
+            walk_away
         end 
 
     end 
@@ -141,7 +135,7 @@ class RobAThon
     def surrender 
     end 
 
-    def walkaway 
+    def walk_away 
     end 
 
     ## different rounds 
