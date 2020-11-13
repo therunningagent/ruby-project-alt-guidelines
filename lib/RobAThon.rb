@@ -62,8 +62,8 @@ class RobAThon
             sleep(2)
             spinner.stop("Done!")
             system("clear")
-
-        puts "Thank you #{$user_search.username}. It's time to make some $$$!"
+        puts @@artii.asciify("#{$user_search.username}")
+        # puts "It's time to make some $$$ 💰💰!"
         puts
         main_menu
     end 
@@ -91,12 +91,12 @@ class RobAThon
 
     def main_menu
 
-        choices = ["Make some 🤑🤑🤑", "Game History", "High Score", "Delete User"]
+        choices = ["Make Some Money 🤑🤑🤑", "Game History", "High Score", "Delete User"]
 
         selection = @@prompt.select("Main Menu", choices)
 
         case selection
-        when "Make some 🤑🤑🤑"
+        when "Make Some Money 🤑🤑🤑"
             system("clear")
             select_character
         when "Game History"
@@ -124,8 +124,8 @@ class RobAThon
 
         sg = Character.all.find { |character| character.name == selection}
         $character = sg 
-        puts "Your health count is #{sg.health_count} and you have $#{sg.total_money} in the bank."
-        sleep(1)
+        puts "Your health count is #{sg.health_count} 💕 and you have $#{sg.total_money} 💰 in the bank."
+        sleep(2)
         current_game = Game.create(user_id: $user_search.id, character_id: sg.id, health_count: sg.health_count, total_money: sg.total_money)
         scenario(current_game)
     end 
@@ -139,11 +139,13 @@ class RobAThon
     def scenario(current_game)
         puts
         random_location = ["Louis Vuitton", "Walmart", "Disney World", "Bank of America", "a friend's house", "Cartier"].sample
-        puts "You're at about to rob #{random_location}.."
-        sleep(1)
         spinner_game
-        puts 
+        system("clear")
+        puts "You're about to rob #{random_location}.."
+        sleep(2)
+        puts
         puts "Oh crap. The police are here!!! 👮‍♀️👮‍♀️👮‍♀️👮‍♀️👮‍♀️👮‍♀️"
+        puts 
         start_game(current_game)
     end 
     
@@ -158,15 +160,19 @@ class RobAThon
         case selection
             when "Run 🏃‍♂️"
                 spinner_game
+                system("clear")
                 run(current_game)
             when "FIGHT 👊"
                 spinner_game
+                system("clear")
                 fight(current_game)
             when "Surrender 👐"
                 spinner_game
+                system("clear")
                 surrender(current_game)
             when "Walk-away🚶"
                 spinner_game
+                system("clear")
                 walk_away(current_game)
             end 
     end 
@@ -184,14 +190,16 @@ class RobAThon
     def game_stats(current_game)
         puts
         system("clear")
-        puts "You currently have #{current_game.total_money} and your health count is #{current_game.health_count}."
+        puts "You currently have $#{current_game.total_money} 💰 and your health count is #{current_game.health_count} 💕."
     end
 
     def check_alive(current_game)
 
-        if current_game.health_count <= 0 
-            puts "Tough luck trooper."
+        if current_game.total_money <= 0 || current_game.health_count <= 0
+            puts 
+            puts "Tough luck trooper. Game over."
             sleep(5)
+            system("clear")
             main_menu
         else current_game.health_count > 0
             scenario(current_game)
@@ -202,35 +210,49 @@ class RobAThon
     def run(current_game)
         if random_num_generator > 5 && character_speed == 3
             current_game.total_money += random_money_generator
+            puts "You successfully escaped and now have $#{current_game.total_money}. On to the next job. 💰💰"
+            sleep(5)
         elsif random_num_generator > 10 && character_speed < 3
             current_game.total_money += random_money_generator
+            puts "You successfully escaped and now have $#{current_game.total_money}. On to the next job. 💰💰"
+            sleep(5)
         else 
             current_game.total_money -= 500
             current_game.health_count -= 1
+            puts "Poor #{$user_search}. You lost $500 💰 and 1 health point. 💕"
         end
         game_stats(current_game)
+        sleep(2)
         check_alive(current_game)
     end 
 
     def fight(current_game)
-        if random_num_generator > 12 
+        if random_num_generator > 15 
+            puts
             puts "You were successful in beating the cops, which gives you a $1000 bonus! 💰"
+            sleep(5)
             current_game.total_money += 1000
         else 
+            puts
             puts "You got away, but you're injured. -3 health points 💔"
+            sleep(5)
             current_game.health_count -= 3
         end
         game_stats(current_game)
+        sleep(2)
         check_alive(current_game)
     end 
 
     def surrender(current_game)
-        if random_num_generator > 7 
-            current_game.health_count += 2
-        else 
-            current_game.health_count -= rand(1..5)
-        end
+        current_game.total_money -= 1000
+        current_game.health_count += 2
+
+        puts "You got locked up and you've done your time. +2 health points 💕 and -$1000 💰"
+
+        sleep(5)
+
         game_stats(current_game)
+        sleep(2)
         check_alive(current_game)
     end 
 
@@ -281,7 +303,7 @@ class RobAThon
         case selection
         when "Yes"
             User.where(username: $user_search.username).destroy_all
-            puts "Your user name has been deleted!"
+            puts "Your username has been deleted!"
             sleep(3)
             system("clear")
             greeting
