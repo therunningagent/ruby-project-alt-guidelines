@@ -1,10 +1,29 @@
 require_relative '../config/environment'
-
+require "pry"
 
 
 class RobAThon
 
     @@prompt = TTY::Prompt.new
+    @@artii = Artii::Base.new:font => 'epic'
+
+    def logo
+        puts @@artii.asciify("Rob-A-Thon")
+    end
+    
+    def spinner_intro
+        spinner = TTY::Spinner.new("[:spinner] Scanning your eyes 👀👀👀👀", format: :pulse_2)
+            spinner.auto_spin
+            sleep(2)
+            spinner.stop("Done!")
+    end 
+
+    def spinner_game
+        spinner = TTY::Spinner.new("[:spinner] Your fate awaits...", format: :pulse_2)
+            spinner.auto_spin
+            sleep(2)
+            spinner.stop("Done!")
+    end 
 
     def greeting
         puts "Welcome to Rob-a-thon!"
@@ -17,6 +36,7 @@ class RobAThon
         case selection
         when "Yes"
             system("clear")
+            spinner_intro
             create_new_user
         when "No"
             system("clear")
@@ -34,7 +54,15 @@ class RobAThon
         $user_search = User.create(username: new_user_response)
         sleep(0.75)
         system("clear")
+
+        spinner = TTY::Spinner.new("[:spinner] Preparing your kit...", format: :pulse_2)
+            spinner.auto_spin
+            sleep(2)
+            spinner.stop("Done!")
+            system("clear")
+
         puts "Thank you #{$user_search.username}. It's time to make some $$$!"
+        puts
         main_menu
     end 
 
@@ -42,12 +70,16 @@ class RobAThon
         puts "Welcome back. Please enter in your username."
         sign_in_response = gets.chomp
         $user_search = User.find_by(username: sign_in_response)
+        puts 
         if $user_search
-            puts "Hello #{sign_in_response}."
+            system("clear")
+            puts @@artii.asciify("Hello ")
+            puts @@artii.asciify("#{sign_in_response}")
+            puts
             main_menu
         else
-            puts "Sorry we could not find your account. Please try again."
-            sleep(1)
+            puts "Sorry we could not find your account. Please try again.🥺"
+            sleep(3)
             system("clear")
             sign_in 
         end 
@@ -55,13 +87,14 @@ class RobAThon
 
     ## main menu 
 
-    def main_menu 
-        choices = ["Make some $$$", "Game History", "High Score", "Delete User"]
+    def main_menu
+
+        choices = ["Make some 🤑🤑🤑", "Game History", "High Score", "Delete User"]
 
         selection = @@prompt.select("Main Menu", choices)
 
         case selection
-        when "Make some $$$"
+        when "Make some 🤑🤑🤑"
             system("clear")
             select_character
         when "Game History"
@@ -77,9 +110,6 @@ class RobAThon
     end 
 
     ## select_character
-
-    ## how do I shorten this code
-    ## how do I let the app know which character I am?
 
     def select_character
         character_choices = ["Speedy Gonzalez", "James Bond", "Cat Woman", "Super Woman", "Spongebob Squarepants"]
@@ -108,19 +138,18 @@ class RobAThon
 
     def start_game(current_game)
 
-        move_choices = ["Run", "FIGHT", "Surrender", "Walk-away"]
+        move_choices = ["Run 🏃‍♂️", "FIGHT 👊", "Surrender 👐", "Walk-away🚶"]
 
         selection = @@prompt.select("How would you like to proceed... It's your choice and yours alone.", move_choices)
 
         case selection
-            when "Run"
+            when "Run 🏃‍♂️"
                 run(current_game)
-            when "FIGHT"
+            when "FIGHT 👊"
                 fight(current_game)
-            when "Surrender"
+            when "Surrender 👐"
                 surrender(current_game)
-            when "Walk-away"
-                puts 
+            when "Walk-away🚶"
                 walk_away(current_game)
             end 
     end 
@@ -150,7 +179,7 @@ class RobAThon
     end
 
     def run(current_game)
-        if random_num_generator > 5 
+        if random_num_generator > 7 
             current_game.total_money += 500
         else 
             current_game.total_money -= 500
@@ -161,7 +190,7 @@ class RobAThon
     end 
 
     def fight(current_game)
-        if random_num_generator > 5 
+        if random_num_generator > 8 
             current_game.health_count += 1
         else 
             current_game.health_count -= 1
@@ -189,6 +218,7 @@ class RobAThon
         when "Yes"
             system("clear")
             game_stats(current_game)
+            puts 
             main_menu
         when "No"
             puts
@@ -202,7 +232,8 @@ class RobAThon
     ## game_history
 
     def game_history
-        Game.all.select { |game| game.user_id == $user_search}
+        # Game.all.select { |game| game.user_id == $user_search.name}
+        Game.where(user_id: $user_search.id)
     end 
 
     ## high_score
@@ -212,15 +243,21 @@ class RobAThon
 
     ## delete_user
     def delete_user
-        sleep(0.75)
-        system("clear")
-        puts "Please type in '#{$user_search.username}' to confirm."
-        delete_user_response = gets.chomp.to_s
-        User.where(username: delete_user_response).destroy_all
-        puts "Your user name has been deleted!"
-        sleep(3)
-        system("clear")
-        greeting
+
+        choices = ["Yes", "No"]
+
+        selection = @@prompt.select("Is this your username '#{$user_search.username}' and would you like to proceed?", choices)
+
+        case selection
+        when "Yes"
+            User.where(username: $user_search.username).destroy_all
+            puts "Your user name has been deleted!"
+            sleep(3)
+            system("clear")
+            greeting
+        when "No"
+            main_menu
+        end 
     end 
 
 
