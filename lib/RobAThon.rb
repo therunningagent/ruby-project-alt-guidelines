@@ -99,10 +99,14 @@ class RobAThon
             select_character
         when "Game History"
             system("clear")
-            game_history
+            game_summary
+            sleep(3)
+            main_menu
         when "High Score"
             system("clear")
-            history_score
+            high_score
+            sleep(3)
+            main_menu
         when "Delete User"
             system("clear")
             delete_user
@@ -236,9 +240,15 @@ class RobAThon
         Game.where(user_id: $user_search.id)
     end 
 
+    def game_summary
+        game_history.each_with_index {|game, index| puts "Game #:#{index + 1} Money Earned: #{game.total_money} Total Health: #{game.health_count}"}
+    end 
+
     ## high_score
 
     def high_score
+       high_score_game = game_history.max_by { |game| game.total_money}
+       puts "Your high score is #{high_score_game.total_money}. You killed it."
     end
 
     ## delete_user
