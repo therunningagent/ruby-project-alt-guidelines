@@ -28,6 +28,7 @@ class RobAThon
     def greeting
         puts "Welcome to Rob-a-thon!"
         sleep (0.75)
+        puts
 
         choices = ["Yes", "No"]
 
@@ -45,6 +46,7 @@ class RobAThon
     end 
 
     $user_search = nil
+    $character = nil
 
     def create_new_user
         sleep(0.75)
@@ -121,20 +123,27 @@ class RobAThon
         selection = @@prompt.select("Character selection:", character_choices)
 
         sg = Character.all.find { |character| character.name == selection}
+        $character = sg 
         puts "Your health count is #{sg.health_count} and you have $#{sg.total_money} in the bank."
         sleep(1)
         current_game = Game.create(user_id: $user_search.id, character_id: sg.id, health_count: sg.health_count, total_money: sg.total_money)
         scenario(current_game)
     end 
 
+    def character_speed
+        speed = $character.speed
+    end 
+
      # scenarios
 
     def scenario(current_game)
-        puts 
-        random_location = ["Louis Vuitton", "Walmart", "Disney World", "Bank of America", "your friend's house", "Cartier"].sample
-        puts "I'll take you to #{random_location}.."
+        puts
+        random_location = ["Louis Vuitton", "Walmart", "Disney World", "Bank of America", "a friend's house", "Cartier"].sample
+        puts "You're at about to rob #{random_location}.."
         sleep(1)
+        spinner_game
         puts 
+        puts "Oh crap. The police are here!!! 👮‍♀️👮‍♀️👮‍♀️👮‍♀️👮‍♀️👮‍♀️"
         start_game(current_game)
     end 
     
@@ -148,12 +157,16 @@ class RobAThon
 
         case selection
             when "Run 🏃‍♂️"
+                spinner_game
                 run(current_game)
             when "FIGHT 👊"
+                spinner_game
                 fight(current_game)
             when "Surrender 👐"
+                spinner_game
                 surrender(current_game)
             when "Walk-away🚶"
+                spinner_game
                 walk_away(current_game)
             end 
     end 
@@ -161,8 +174,11 @@ class RobAThon
     ## robber methods
 
     def random_num_generator
-        num = rand(1..10)
-        num
+        num = rand(1..20)
+    end 
+
+    def random_money_generator
+        num = rand(1..1000)
     end 
 
     def game_stats(current_game)
@@ -177,14 +193,17 @@ class RobAThon
             puts "Tough luck trooper."
             sleep(5)
             main_menu
-        else current_game.health_count > 0 
+        else current_game.health_count > 0
+            scenario(current_game)
             start_game(current_game)
         end 
     end
 
     def run(current_game)
-        if random_num_generator > 7 
-            current_game.total_money += 500
+        if random_num_generator > 5 && character_speed == 3
+            current_game.total_money += random_money_generator
+        elsif random_num_generator > 10 && character_speed < 3
+            current_game.total_money += random_money_generator
         else 
             current_game.total_money -= 500
             current_game.health_count -= 1
@@ -194,17 +213,19 @@ class RobAThon
     end 
 
     def fight(current_game)
-        if random_num_generator > 8 
-            current_game.health_count += 1
+        if random_num_generator > 12 
+            puts "You were successful in beating the cops, which gives you a $1000 bonus! 💰"
+            current_game.total_money += 1000
         else 
-            current_game.health_count -= 1
+            puts "You got away, but you're injured. -3 health points 💔"
+            current_game.health_count -= 3
         end
         game_stats(current_game)
         check_alive(current_game)
     end 
 
     def surrender(current_game)
-        if random_num_generator > 5 
+        if random_num_generator > 7 
             current_game.health_count += 2
         else 
             current_game.health_count -= rand(1..5)
@@ -236,12 +257,11 @@ class RobAThon
     ## game_history
 
     def game_history
-        # Game.all.select { |game| game.user_id == $user_search.name}
         Game.where(user_id: $user_search.id)
     end 
 
     def game_summary
-        game_history.each_with_index {|game, index| puts "Game #:#{index + 1} Money Earned: #{game.total_money} Total Health: #{game.health_count}"}
+        game_history.each_with_index {|game, index| puts "Game ##{index + 1}: Money Earned: #{game.total_money} Total Health: #{game.health_count}"}
     end 
 
     ## high_score
